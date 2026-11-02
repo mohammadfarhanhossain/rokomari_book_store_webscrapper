@@ -1,0 +1,20 @@
+services:
+  mysql:
+    image: mysql:8.4
+    environment:
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-rokomari_db}
+      MYSQL_USER: ${MYSQL_USER:-bookstore}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-change-me}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-change-root-me}
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+  chroma:
+    image: chromadb/chroma:0.5.20
+    ports:
+      - "8000:8000"
+
+volumes:
+  mysql_data:

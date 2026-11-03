@@ -1,13 +1,19 @@
-# Wrapper to run the Rokomari pipeline daily
-$ProjectDir = Split-Path -Parent $MyInvocation.MyCommand.Path
-$python = Join-Path $ProjectDir ".venv\Scripts\python.exe"
-$script = Join-Path $ProjectDir "rokomari_pipeline.py"
-$timestamp = (Get-Date).ToString("yyyy-MM-dd_HH-mm-ss")
-$logFile = Join-Path $ProjectDir "data\logs\rokomari_daily_$timestamp.log"
-$errFile = Join-Path $ProjectDir "data\logs\rokomari_daily_$timestamp.err.log"
+# Daily Automation Script for Rokomari
+$ErrorActionPreference = "Continue"
+$ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
+Set-Location $ScriptDir
 
-# Ensure logs directory exists
-New-Item -ItemType Directory -Path (Join-Path $ProjectDir "data\logs") -Force | Out-Null
+$LogDir = Join-Path $ScriptDir "data\logs"
+if (!(Test-Path $LogDir)) { New-Item -ItemType Directory -Path $LogDir | Out-Null }
+$LogFile = Join-Path $LogDir "daily_run_$(Get-Date -Format 'yyyyMMdd').log"
 
-# Run the pipeline and capture stdout/stderr to separate files
-& $python $script --scrape > $logFile 2> $errFile
+Write-Output "[$(Get-Date -Format 'yyyy-MM-dd HH:mm:ss')] Starting scheduled daily update for Rokomari..." | Tee-Object -FilePath $LogFile -Append
+
+if (Test-Path ".\.venv\Scripts\python.exe") {
+    $PythonExe = ".\.venv\Scripts\python.exe"
+} else {
+    $PythonExe = "python.exe"
+}
+
+& $PythonExe "rokomari_pipeline.py" --verify | Tee-Object -FilePath $LogFile -Append
+Write-Output "[$(Get-Date -Format 'yyyy-MM-dd HH:mm:ss')] Verification and daily run completed for Rokomari." | Tee-Object -FilePath $LogFile -Append

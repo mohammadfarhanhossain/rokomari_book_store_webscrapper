@@ -1,32 +1,8 @@
-# Virtual Environments
 .venv/
-venv/
-ENV/
-env/
-**/.venv/
-**/venv/
-
-# Cache & Sixth
-.sixth/
 __pycache__/
-**/*__pycache__*
-*.pyc
-*.pyo
-*.pyd
-
-# Archive CSVs (outdated large raw files)
-data/archive/*.csv
-data/archive/*.txt
-
-# IDE & OS
-.vscode/
-.idea/
-.DS_Store
-Thumbs.db
-
-# Logs and State
-data/state/
-data/logs/*.log
-*.log
 *.tmp
-**/*.tmp
+data/logs/
+data/state/
+
+*.sqlite3
+data/archive/
